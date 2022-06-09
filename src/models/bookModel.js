@@ -7,6 +7,11 @@ const bookSchema = new mongoose.Schema( {
         type: ObjectId,
         ref: "Author"
     },
+    publisher :{
+        type :ObjectId,
+        ref :"publisher",
+    },
+
     price: Number,
     ratings: Number
 
