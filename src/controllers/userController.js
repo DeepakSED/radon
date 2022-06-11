@@ -12,21 +12,12 @@ const basicCode= async function(req, res) {
     res.send({ msg: "This is coming from controller (handler)"})
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const simple =async function(req,res){
+    console.log("This is Middleware")
+}
+const global=async function(req,res){
+    console.log("hello")
+}
 
 
 
@@ -44,3 +35,5 @@ const getUsersData= async function (req, res) {
 module.exports.createUser= createUser
 module.exports.getUsersData= getUsersData
 module.exports.basicCode= basicCode
+module.exports.simple=simple
+module.exports.global=global
