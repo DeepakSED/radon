@@ -41,6 +41,7 @@ const loginUser = async function (req, res) {
 };
 
 const getUserData = async function (req, res) {
+  try{
   let token = req.headers["x-Auth-token"];
   if (!token) token = req.headers["x-auth-token"];
 
@@ -54,16 +55,23 @@ const getUserData = async function (req, res) {
   // Input 1 is the token to be decoded
   // Input 2 is the same secret with which the token was generated
   // Check the value of the decoded token yourself
+try{
   let decodedToken = jwt.verify(token, "functionup-radon");
-  if (!decodedToken)
+  }catch(error){
+  // if (!decodedToken)
+  console.log(error.message)
     return res.send({ status: false, msg: "token is invalid" });
-
+  }
   let userId = req.params.userId;
   let userDetails = await userModel.findById(userId);
   if (!userDetails)
     return res.send({ status: false, msg: "No such user exists" });
 
   res.send({ status: true, data: userDetails });
+}catch(error)
+ {
+  return res.send({ status: false, msg: error.message });
+ }
 };
 
 const updateUser = async function (req, res) {
@@ -83,8 +91,22 @@ const updateUser = async function (req, res) {
   let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
   res.send({ status: updatedUser, data: updatedUser });
 };
+const deleteUser = async function (req, res) {
+    let userId = req.params.userId;
+    let user = await userModel.findById(userId);
+    //Return an error if no user with the given id exists in the db
+    if (!user) {
+      return res.send("Data is Deleted");
+    }
+  
+    let userData = req.body;
+    let deleteUser = await userModel.findOneAndUpdate({ _id: userId }, {$set:{isDeleted:true}},{new:true,upsert:true});
+    res.send({ status:deleteUser, data:deleteUser });
+  };
 
 module.exports.createUser = createUser;
 module.exports.getUserData = getUserData;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
+module.exports.deleteUser =deleteUser
+
